@@ -31,6 +31,8 @@
 *.out
 *.app
 
-# Pictures
+# Pictures and Documentation
 #*.bmp
 *.tiff
+*.pdf
+ilove*.zip

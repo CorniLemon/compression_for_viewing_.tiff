@@ -1,191 +1,172 @@
-#ifndefTIFREADER_H
-#defineTIFREADER_H
-#include<stdio.h>
-#include<string.h>
-#ifndefNULL
-#defineNULL0
-#endif
-#ifndefTRUE
-#defineTRUE1
-#defineFALSE0
-#endif
-typedefstruct
-{
-unsignedshortByte_order;//
-unsignedshortVersion;// Проверяем, является ли файл файлом TIF
-unsignedintOffsetToFirstFID;// Относительное смещение до начала файла
-// unsignedshortwDECount; // Сколько записей в каталоге
-}IFH;
-typedefstruct
-{
-unsignedshorttag;// Номер атрибута
-unsignedshorttype;// тип данных
-unsignedlonglength;// Количество данных
-unsignedlongvalueOffset;// Смещение значения переменной, представленной атрибутом тега, от начала файла
-}DE;
-typedefstruct
-{
-intwidth;
-intheight;
-}Size;
-typedefstruct
-{
-int* data;
-}DATA;
-typedefstruct
-{
-DE * pde;
-intwDECount;
-}PDE;
-boolreadTIF(char* path, IFH& ifh, PDE& de, Size& size, DATA& Data)
-{
-	unsignedchar* data;
-	int* dat;
-	unsignedshortwDECount;// Сколько записей в каталоге
-	//ZeroMemory(&ifh,sizeof(IFH));
-	//ZeroMemory(&de,sizeof(DE));
-	FILE* fp;
-	fp = fopen(path, "rb");
-	if (fp == NULL)
-	{
-		cout << "openfileerror" << endl;
-		returnfalse;
-	}
-	if (sizeof(IFH) != fread(&ifh, 1, sizeof(IFH), fp))
-	{
-		cout << «Не удалось прочитать заголовок файла TIF»;
-		returnFALSE;
-	}
-	if (0x2a != ifh.Version)
-	{
-		cout << «Файл не в формате TIF, не удалось прочитать файл»;
-		returnFALSE;
-	}
-	if (0x4949 != ifh.Byte_order)
-	{
-		cout << «Файл TIF имеет неправильный порядок байтов IBMPC.Не удалось прочитать файл»;
-		returnFALSE;
-	}
-	fseek(fp, ifh.OffsetToFirstFID, SEEK_SET);// Находим указатель файла на IFD
-	// Сколько записей в каталоге есть для чтения файла
-	if (2 != fread(&wDECount, 1, sizeof(unsignedshort), fp))
-	{
-		cout << «Не удалось получить количество записей каталога файлов TIF»;
-		returnFALSE;
-	}
-	cout << "Файл TIF содержит" << wDECount << "Запись в каталоге" << endl;
-	// Создаем массив DE, получаем информацию, в массиве есть элементы wDECount
-	de.pde = newDE[wDECount];
-	DE* pTemp = de.pde;
-	de.wDECount = wDECount;
-	memset(de.pde, 0, sizeof(DE) * wDECount);
-	if (sizeof(DE) * wDECount != fread(de.pde, 1, sizeof(DE) * wDECount, fp))
-	{
-		cout << «Не удалось прочитать каталог файлов изображений»;
-		delete[]de.pde;
-		returnfalse;
-	}
-	// Сохраняем размер изображения и емкость данных изображения в переменные-члены
-	intm_size_x;
-	intm_size_y;
-	intm_size;
-	inti;
-	for (i = 0; i < wDECount; i++)
-	{
-		pTemp = de.pde + i;
-		if (256 == pTemp->tag)// Переменная в записи каталога с тегом 256 определяет ширину изображения
-		{
-			m_size_x = pTemp->valueOffset;
-		}
-		if (257 == pTemp->tag)// Высота изображения
-		{
-			m_size_y = pTemp->valueOffset;
-		}
-		if (273 == pTemp->tag)// Рассчитываем количество байтов, занятых данными изображения
-		{
-			//m_dwBmSize=pTemp->valueOffset-sizeof(IFH);
-			// Или умножьте valueOffset тега = 256 на valueOffset тега = 257
-			m_size = m_size_x * m_size_y;
-		}
-	}
-	// Заполняем все пиксельные данные, инвертируем данные изображения и начинаем чтение с последней строки
-	intj = 0;
-	//inti=0;
-	data = (unsignedchar*)malloc(m_size * sizeof(BYTE));
-	dat = (int*)malloc(m_size * sizeof(int));
-	for (i = m_size_y - 1; i >= 0; i--)
-	{
-		fseek(fp, sizeof(IFH) + i * m_size_x, SEEK_SET);
-		fread((BYTE*)(data + 1) + j * m_size_x, sizeof(BYTE), m_size_x, fp);
-		j++;
-	}
-	cout << "width:" << m_size_x << endl;
-	cout << "height:" << m_size_y << endl;
-	unsignedchar* p;
-	p = data;
-	int* ptr;
-	ptr = dat;
-	for (i = 0; i < m_size; i++, p++, ptr++)
-	{
-		*ptr = (int)(*p);
-		inth = *ptr;
-		//cout<<h<<"";
-	}
-	size.width = m_size_x;
-	size.height = m_size_y;
-	Data.data = dat;
-	returnTRUE;
+#define _CRT_SECURE_NO_WARNINGS
+#include <iostream>
+#include <Windows.h>
+using namespace std;
+
+typedef unsigned __int16 WORD;//2 байта
+//typedef unsigned int DWORD;//4 байта
+typedef long LONG;//4 байта
+typedef unsigned char BYTE;//1 байт
+
+class FileWithDes {
+    FILE* f = NULL;
+public:
+    FileWithDes(const char A[], const char B[]) {
+        f = fopen(A, B);
+        if (!f) {
+            cout << "файл " << A << " не существует или не удалось создать\n";
+            throw;
+        }
+    };
+
+    FILE* getF() {
+        return f;
+    };
+
+    ~FileWithDes() {
+        fclose(f);
+        f = NULL;
+    }
+};
+
+class Line {
+    size_t n = 0;
+    BYTE* line = NULL;
+public:
+    Line(size_t n)
+        :n(n), line(new BYTE[n])
+    {};
+
+    Line(BYTE* line1)
+    {
+        line = line1;
+    };
+
+    BYTE* data() {
+        return line;
+    };
+
+    BYTE& operator[] (int i) {
+        /*if (i < 0 || i >= n)
+            throw 1;*/
+        return line[i];
+    }
+
+    ~Line() {
+        if (line)
+        {
+            delete[] line;
+        }
+        line = NULL;
+    };
+};
+
+int main() {
+    setlocale(LC_ALL, "Russian");
+
+    //шапка .bmp
+    BITMAPFILEHEADER bfh;
+    BITMAPINFOHEADER bih;
+    RGBTRIPLE rgb;
+    size_t padding;
+    bfh.bfType = 19778;
+    bfh.bfReserved1 = 0;
+    bfh.bfReserved2 = 0;
+    bih.biPlanes = 1;
+    bih.biBitCount = 24;
+    bih.biCompression = 0;
+    bih.biXPelsPerMeter = 2835;
+    bih.biYPelsPerMeter = 2835;
+    bih.biClrUsed = 0;
+    bih.biClrImportant = 0;
+    FileWithDes f2("final.bmp", "wb");
+
+    int Add = 1;
+    cout << "пожалуйста, введите количество пикселей, которые будут объединены в 1 (сторона квадратной области)\n";
+    cin >> Add;
+
+    if ((Add + 1 > bih.biWidth) || (Add + 1 > bih.biHeight))
+    {
+        cout << "количество объединяемых пикселей слишком большое (изображение сожмется в картинку 1*1)";
+        return 0;
+    }
+
+    fwrite(&bfh, sizeof(bfh), 1, f2.getF());
+    fwrite(&bih, sizeof(bih), 1, f2.getF());
+
+    /*LONG WIGTH = bih.biWidth;//заполнение шапки .bmp
+    int WOst = bih.biWidth % Add;
+    bih.biWidth = bih.biWidth / Add;
+    if (WOst) ++bih.biWidth;
+
+    LONG HEIGHT = bih.biHeight;
+    int HOst = bih.biHeight % Add;
+    bih.biHeight = bih.biHeight / Add;
+    if (HOst) ++bih.biHeight;
+
+    DWORD SIZE = bih.biSizeImage;
+    bih.biSizeImage = bih.biHeight * bih.biWidth;*/
+
+    cout << "стало: " << bih.biHeight << "*" << bih.biWidth << endl;
+
+    padding = (4 - (bih.biWidth * 3) % 4) % 4;
+    bfh.bfSize = sizeof(bfh) + sizeof(bih) + bih.biSizeImage * 3 + padding * bih.biHeight * 3;
+
+    Line line2(bih.biWidth * 3 + padding);
+
+    memset(line2.data() + bih.biWidth * 3, 0, padding * sizeof(BYTE));//паддинг line2 черный
+
+    cout << "padding.after: " << padding << endl;
+
+    double AverageB;
+    double AverageG;
+    double AverageR;
+
+    auto CreatePixel = [&](int allowH, int allowW, int position) {//создаёт каждый отдельный пиксель
+        int count = allowH * allowW;
+        AverageB = 0;
+        AverageG = 0;
+        AverageR = 0;
+        for (int j = 0; j < allowH; ++j) {
+            for (int k = 0; k < allowW; ++k) {
+                //суммирование по пикселям
+            }
+        }
+        AverageB /= count;
+        AverageG /= count;
+        AverageR /= count;
+        line2.data()[position * 3] = byte(AverageB + 0.5);
+        line2.data()[position * 3 + 1] = byte(AverageG + 0.5);
+        line2.data()[position * 3 + 2] = byte(AverageR + 0.5);
+    };
+
+    auto CreateLine2 = [&](int h1, int w2) {//создаёт всю строку кроме остатка
+        for (int i = 0; i < w2; ++i) {
+            CreatePixel(h1, Add, i);
+        }
+    };
+
+    auto CreateAllLine2 = [&](int h1) {
+        //if (WOst)
+        //{
+            CreateLine2(h1, bih.biWidth - 1);//создаёт всю строку кроме последнего пикселя
+            //CreatePixel(h1, WOst, bih.biWidth - 1);//последний пиксель в строке
+        //}
+        //else
+        //{
+        //    CreateLine2(h1, bih.biWidth);//создаёт всю строку
+        //}
+    };
+
+    for (int i = 0; i < HEIGHT / Add; ++i) {
+        
+        CreateAllLine2(Add);
+        fwrite(line2.data(), bih.biWidth * 3 + padding, 1, f2.getF());
+    }
+    /*if (HOst)
+    {
+        CreateAllLine2(HOst);
+        fwrite(line2.data(), bih.biWidth * 3 + padding.after, 1, f2.getF());
+    }*/
+    return 0;
 }
-boolsaveTIF(char* path, IFHifh, PDEde, Sizesize, DATAData)
-{
-	unsignedchar* data;
-	// unsignedshortwDECount; // Сколько записей в каталоге
-	//ZeroMemory(&ifh,sizeof(IFH));
-	//ZeroMemory(&de,sizeof(DE));
-	FILE* fp;
-	fp = fopen(path, "wb");
-	if (fp == NULL)
-	{
-		cout << "openfileerror" << endl;
-		returnfalse;
-	}
-	if (sizeof(IFH) != fwrite(&ifh, 1, sizeof(IFH), fp))
-	{
-		cout << «Не удалось записать заголовок файла TIF»;
-		returnFALSE;
-	}
-	fseek(fp, ifh.OffsetToFirstFID, SEEK_SET);// Находим указатель файла на IFD
-	// Сколько записей в каталоге есть для чтения файла
-	if (2 != fwrite(&de.wDECount, 1, sizeof(unsignedshort), fp))
-	{
-		cout << «Не удалось получить количество записей каталога файлов TIF»;
-		returnFALSE;
-	}
-	// Создаем массив DE, получаем информацию, в массиве есть элементы wDECount
-	if (sizeof(DE) * de.wDECount != fwrite(de.pde, 1, sizeof(DE) * de.wDECount, fp))
-	{
-		cout << «Не удалось прочитать каталог файлов изображений»;
-		returnfalse;
-	}
-	// Заполняем все пиксельные данные, инвертируем данные изображения и начинаем чтение с последней строки
-	intj = 0;
-	inti = 0;
-	data = (unsignedchar*)malloc(size.width * size.height * sizeof(BYTE));
-	int* ptr = Data.data;
-	unsignedchar* p;
-	p = data;
-	for (i = 0; i < size.width * size.height; i++, p++, ptr++)
-	{
-		*p = (unsignedchar)(*ptr);
-		//inth=*ptr;
-		//cout<<h<<"";
-	}
-	for (i = size.height - 1; i >= 0; i--)
-	{
-		fseek(fp, sizeof(IFH) + i * size.width, SEEK_SET);
-		fwrite((BYTE*)(data + 1) + j * size.width, sizeof(BYTE), size.width, fp);
-		j++;
-	}
-	returnTRUE;
-}
-#endif
