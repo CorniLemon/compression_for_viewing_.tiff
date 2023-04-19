@@ -1,7 +1,11 @@
+//#include <TIFF.h>//почему не работает то?
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <Windows.h>
+#include<vector>
 using namespace std;
+#include <stdint.h>
+#include "TIFF.h"
 
 typedef unsigned __int16 WORD;//2 байта
 //typedef unsigned int DWORD;//4 байта
@@ -15,8 +19,9 @@ public:
         f = fopen(A, B);
         if (!f) {
             cout << "файл " << A << " не существует или не удалось создать\n";
-            throw;
+            throw 1;
         }
+        //throw 1;
     };
 
     FILE* getF() {
@@ -64,12 +69,26 @@ public:
 int main() {
     setlocale(LC_ALL, "Russian");
 
+    FileWithDes f1("0041_0102_01567_1_01497_03_S_fr.tiff", "rb");//создание потока для чтения tiff
+    TiffFile initialFiile(f1.getF());//данные о tiff
+
+    int Add = 1;
+    cout << "пожалуйста, введите количество пикселей, которые будут объединены в 1 (сторона квадратной области)\n";
+    cin >> Add;
+
+    if ((Add >= initialFiile.WIDTH) || (Add >= initialFiile.HIGHT))//проверка add
+    {
+        cout << "количество объединяемых пикселей слишком большое (изображение сожмется в картинку 1*1)";
+        return 0;
+    }
+
+    FileWithDes f2("final.bmp", "wb");
     //шапка .bmp
     BITMAPFILEHEADER bfh;
     BITMAPINFOHEADER bih;
-    RGBTRIPLE rgb;
-    size_t padding;
-    bfh.bfType = 19778;
+    //RGBTRIPLE rgb;
+    uint8_t padding;
+    /*bfh.bfType = 19778;
     bfh.bfReserved1 = 0;
     bfh.bfReserved2 = 0;
     bih.biPlanes = 1;
@@ -78,45 +97,43 @@ int main() {
     bih.biXPelsPerMeter = 2835;
     bih.biYPelsPerMeter = 2835;
     bih.biClrUsed = 0;
-    bih.biClrImportant = 0;
-    FileWithDes f2("final.bmp", "wb");
-
-    int Add = 1;
-    cout << "пожалуйста, введите количество пикселей, которые будут объединены в 1 (сторона квадратной области)\n";
-    cin >> Add;
-
-    if ((Add + 1 > bih.biWidth) || (Add + 1 > bih.biHeight))
-    {
-        cout << "количество объединяемых пикселей слишком большое (изображение сожмется в картинку 1*1)";
-        return 0;
-    }
-
-    fwrite(&bfh, sizeof(bfh), 1, f2.getF());
-    fwrite(&bih, sizeof(bih), 1, f2.getF());
-
-    /*LONG WIGTH = bih.biWidth;//заполнение шапки .bmp
-    int WOst = bih.biWidth % Add;
-    bih.biWidth = bih.biWidth / Add;
+    bih.biClrImportant = 0;*/
+    int WOst = initialFiile.WIDTH % Add;
+    bih.biWidth = initialFiile.WIDTH / Add;
     if (WOst) ++bih.biWidth;
 
-    LONG HEIGHT = bih.biHeight;
-    int HOst = bih.biHeight % Add;
-    bih.biHeight = bih.biHeight / Add;
+    int HOst = initialFiile.HIGHT % Add;
+    bih.biHeight = initialFiile.HIGHT / Add;
     if (HOst) ++bih.biHeight;
 
-    DWORD SIZE = bih.biSizeImage;
-    bih.biSizeImage = bih.biHeight * bih.biWidth;*/
+    bfh.bfType = 19778;
+    bfh.bfSize = sizeof(bfh) + sizeof(bih) + 3 * bih.biWidth * bih.biWidth;
+    bfh.bfReserved1 = 0;
+    bfh.bfReserved2 = 0;
+    bfh.bfOffBits = sizeof(bfh) + sizeof(bih);
 
-    cout << "стало: " << bih.biHeight << "*" << bih.biWidth << endl;
+    bih.biSize = sizeof(bih);
+    bih.biPlanes = 1;
+    bih.biBitCount = 24;
+    bih.biCompression = 0;
+    bih.biSizeImage = bih.biWidth * bih.biWidth * 3;
+    bih.biXPelsPerMeter = 2835;
+    bih.biYPelsPerMeter = 2835;
+    bih.biClrUsed = 0;
+    bih.biClrImportant = 0;
 
     padding = (4 - (bih.biWidth * 3) % 4) % 4;
-    bfh.bfSize = sizeof(bfh) + sizeof(bih) + bih.biSizeImage * 3 + padding * bih.biHeight * 3;
 
-    Line line2(bih.biWidth * 3 + padding);
+    fwrite(&bfh, sizeof(bfh), 1, f2.getF());
+    fwrite(&bih, sizeof(bih), 1, f2.getF());//файл не поддерживается(
+    
+    cout << "было: " << initialFiile.HIGHT << "*" << initialFiile.WIDTH << endl;
+    cout << "стало: " << bih.biHeight << "*" << bih.biWidth << endl;
+    cout << "выравнивание: " << padding << endl;
 
+    vector<WORD> line1(initialFiile.WIDTH * 3 * Add);
+    vector<BYTE> line2(bih.biWidth * 3 + padding);
     memset(line2.data() + bih.biWidth * 3, 0, padding * sizeof(BYTE));//паддинг line2 черный
-
-    cout << "padding.after: " << padding << endl;
 
     double AverageB;
     double AverageG;
@@ -130,6 +147,9 @@ int main() {
         for (int j = 0; j < allowH; ++j) {
             for (int k = 0; k < allowW; ++k) {
                 //суммирование по пикселям
+                AverageB += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3] / 256;
+                AverageG += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 1] / 256;
+                AverageR += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 2] / 256;
             }
         }
         AverageB /= count;
@@ -147,26 +167,27 @@ int main() {
     };
 
     auto CreateAllLine2 = [&](int h1) {
-        //if (WOst)
-        //{
+        if (WOst)
+        {
             CreateLine2(h1, bih.biWidth - 1);//создаёт всю строку кроме последнего пикселя
-            //CreatePixel(h1, WOst, bih.biWidth - 1);//последний пиксель в строке
-        //}
-        //else
-        //{
-        //    CreateLine2(h1, bih.biWidth);//создаёт всю строку
-        //}
+            CreatePixel(h1, WOst, bih.biWidth - 1);//последний пиксель в строке
+        }
+        else
+        {
+            CreateLine2(h1, bih.biWidth);//создаёт всю строку
+        }
     };
 
-    for (int i = 0; i < HEIGHT / Add; ++i) {
-        
+    for (int i = 0; i < initialFiile.HIGHT / Add; ++i) {
+        fread(line1.data(), (initialFiile.WIDTH * 3)* Add, 1, f1.getF());
         CreateAllLine2(Add);
         fwrite(line2.data(), bih.biWidth * 3 + padding, 1, f2.getF());
     }
-    /*if (HOst)
+
+    if (HOst)
     {
         CreateAllLine2(HOst);
-        fwrite(line2.data(), bih.biWidth * 3 + padding.after, 1, f2.getF());
-    }*/
+        fwrite(line2.data(), bih.biWidth * 3 + padding, 1, f2.getF());
+    }
     return 0;
 }
