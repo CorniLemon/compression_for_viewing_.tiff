@@ -62,7 +62,6 @@ public:
                 HIGHT = ifd.valueOffset;
                 break;
             case 258:
-                cout << "мы в жопе";
                 //stac = SEEK_CUR;//не прокатило
                 stac = ifd.valueOffset;
                 /*fseek(f, ifd.valueOffset, SEEK_SET);
@@ -85,7 +84,7 @@ public:
         cout << "смещение = " << offsetOfStrips << endl;
         cout << "zzz = " << zzz << endl;
 
-        print();
+        //print();
     };
 
     void print() {

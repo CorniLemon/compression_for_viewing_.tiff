@@ -131,7 +131,8 @@ int main() {
     cout << "стало: " << bih.biHeight << "*" << bih.biWidth << endl;
     cout << "выравнивание: " << padding << endl;
 
-    vector<WORD> line1(initialFiile.WIDTH * 3 * Add);
+    /*vector<WORD> line1(initialFiile.WIDTH * 3 * Add);*/
+    vector<WORD> line1(initialFiile.WIDTH * 3 * Add*2);
     vector<BYTE> line2(bih.biWidth * 3 + padding);
     memset(line2.data() + bih.biWidth * 3, 0, padding * sizeof(BYTE));//паддинг line2 черный
 
@@ -147,9 +148,12 @@ int main() {
         for (int j = 0; j < allowH; ++j) {
             for (int k = 0; k < allowW; ++k) {
                 //суммирование по пикселям
-                AverageB += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3] / 256;
+                /*AverageB += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3] / 256;
                 AverageG += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 1] / 256;
-                AverageR += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 2] / 256;
+                AverageR += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 2] / 256;*/
+                AverageB += line1[(j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3)*2+1];
+                AverageG += line1[(j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 1)*2+1];
+                AverageR += line1[(j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 2)*2+1];
             }
         }
         AverageB /= count;
