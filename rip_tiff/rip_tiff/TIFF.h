@@ -16,7 +16,7 @@ public:
         uint16_t tag;
         uint16_t type;
         uint32_t countOfType;
-        uint32_t valueOffset;//что это такое а?
+        uint32_t valueOffset;
         void printIfd() {
             cout << "tag = " << tag << endl;
             cout << "type = " << type << endl;//почему 120 когда наверное 12?
@@ -32,17 +32,22 @@ public:
     uint32_t offsetOfStrips;
     int zzz;
     size_t stac;
+    size_t stac1;
+    uint32_t start;
 
     TiffFile(FILE* f) {//читает header
         fread(&head.IIorMM, 2, 1, f);
         fread(&head.isItTiff, 2, 1, f);
         fread(&head.offset, 4, 1, f);
+        //stac1 = SEEK_CUR;
+        stac1 = ftell(f);
 
         fseek(f, head.offset, SEEK_SET);
 
         fread(&count, 2, 1, f);
 
         //count = 5;//потом обязательно удалить!!!!!!!!!!!!
+        ifdS.reserve(count);//размер вектора
 
         for (int i = 0; i < count; ++i)
         {
@@ -79,10 +84,14 @@ public:
         fseek(f, stac, SEEK_SET);
         fread(&zzz, 2, 1, f);
 
+        
+        fseek(f, offsetOfStrips, SEEK_SET);
+        fread(&start, 4, 1, f);
+
         cout << "высота = " << HIGHT << endl;
         cout << "ширина = " << WIDTH << endl;
-        cout << "смещение = " << offsetOfStrips << endl;
-        cout << "zzz = " << zzz << endl;
+        cout << "смещение к началу пикселей = " << start << endl;
+        cout << "бит на канал = " << zzz << endl;
 
         //print();
     };

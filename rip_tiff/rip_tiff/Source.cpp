@@ -131,10 +131,11 @@ int main() {
     cout << "стало: " << bih.biHeight << "*" << bih.biWidth << endl;
     cout << "выравнивание: " << padding << endl;
 
-    /*vector<WORD> line1(initialFiile.WIDTH * 3 * Add);*/
-    vector<WORD> line1(initialFiile.WIDTH * 3 * Add*2);
+    vector<WORD> line1(initialFiile.WIDTH * 3 * Add);
+    //vector<WORD> line1(initialFiile.WIDTH * 3 * Add*2);
     vector<BYTE> line2(bih.biWidth * 3 + padding);
     memset(line2.data() + bih.biWidth * 3, 0, padding * sizeof(BYTE));//паддинг line2 черный
+    vector <vector<BYTE>> matrBMP(bih.biHeight);
 
     double AverageB;
     double AverageG;
@@ -151,9 +152,14 @@ int main() {
                 /*AverageB += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3] / 256;
                 AverageG += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 1] / 256;
                 AverageR += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 2] / 256;*/
-                AverageB += line1[(j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3)*2+1];
+
+                AverageB += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 2] / 4;//B
+                AverageG += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 1] / 4;//G
+                AverageR += line1[j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3] / 4;//R
+
+                /*AverageB += line1[(j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3)*2+1];
                 AverageG += line1[(j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 1)*2+1];
-                AverageR += line1[(j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 2)*2+1];
+                AverageR += line1[(j * (initialFiile.WIDTH * 3) + (position * Add + k) * 3 + 2)*2+1];*/
             }
         }
         AverageB /= count;
@@ -182,16 +188,25 @@ int main() {
         }
     };
 
+    fseek(f1.getF(), initialFiile.start, SEEK_SET);//где хранится ссылка на фактическое начало изображения?
+    //fseek(f1.getF(), initialFiile.offsetOfStrips, SEEK_SET);
+
     for (int i = 0; i < initialFiile.HIGHT / Add; ++i) {
-        fread(line1.data(), (initialFiile.WIDTH * 3)* Add, 1, f1.getF());
+        fread(line1.data(), (initialFiile.WIDTH * 3)* Add*2, 1, f1.getF());
         CreateAllLine2(Add);
-        fwrite(line2.data(), bih.biWidth * 3 + padding, 1, f2.getF());
+        //fwrite(line2.data(), bih.biWidth * 3 + padding, 1, f2.getF());
+        matrBMP[i] = line2;
     }
 
     if (HOst)
     {
         CreateAllLine2(HOst);
-        fwrite(line2.data(), bih.biWidth * 3 + padding, 1, f2.getF());
+        //fwrite(line2.data(), bih.biWidth * 3 + padding, 1, f2.getF());
+        matrBMP[bih.biHeight-1] = line2;
+    }
+
+    for (int i = bih.biHeight - 1; i >= 0; --i) {
+        fwrite(matrBMP[i].data(), bih.biWidth * 3 + padding, 1, f2.getF());
     }
     return 0;
 }
