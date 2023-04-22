@@ -1,0 +1,18 @@
+﻿  Source.cpp
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(9,13): warning C4068: неизвестная прагма "pac"
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(15,13): warning C4068: неизвестная прагма "pac"
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(19,13): warning C4068: неизвестная прагма "pac"
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(32,13): warning C4068: неизвестная прагма "pac"
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\Source.cpp(59,43): warning C4267: =: преобразование из "size_t" в "LONG"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\Source.cpp(63,44): warning C4267: =: преобразование из "size_t" в "LONG"; возможна потеря данных
+  TIFF.cpp
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(9,13): warning C4068: неизвестная прагма "pac"
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(15,13): warning C4068: неизвестная прагма "pac"
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(19,13): warning C4068: неизвестная прагма "pac"
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(32,13): warning C4068: неизвестная прагма "pac"
+  Создание кода
+  40 of 216 functions (18.5%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    15 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  rip_tiff.vcxproj -> C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\x64\Release\rip_tiff.exe
