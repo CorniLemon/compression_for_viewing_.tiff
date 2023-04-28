@@ -63,6 +63,8 @@ public:
             case 258:
                 fseek(f, tags[i].valueOffset, SEEK_SET);
                 fread(&bitOnPix, 2, 1, f);//2 соответствует типу
+                if (bitOnPix != 16)
+                    throw exception("канал кодируется НЕ 16 битами!");
                 break;
             case 259:
                 if (tags[i].valueOffset != 1)
@@ -119,4 +121,6 @@ public:
 
         //print();
     };
+
+    
 };

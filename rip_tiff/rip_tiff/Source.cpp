@@ -36,9 +36,9 @@ int main() {
     setlocale(LC_ALL, "Russian");
 
     try {
-        //FileWithDes f1("0041_0102_01567_1_01497_03_S_fr.tiff", "rb");//создание потока для чтения tiff
+        FileWithDes f1("0041_0102_01567_1_01497_03_S_fr.tiff", "rb");//создание потока для чтения tiff
         //FileWithDes f1("0041_0102_01567_1_01497_03_S.tiff", "rb");//создание потока для чтения tiff
-        FileWithDes f1("ket.tiff", "rb");//создание потока для чтения tiff
+        //FileWithDes f1("ket.tiff", "rb");//создание потока для чтения tiff
         TiffFile initialFile(f1.getF());//данные о tiff
         
 
@@ -196,7 +196,7 @@ int main() {
     }
     catch (exception& ex) {
         cout << "что-то пошло не так...\n\n";
-        cout<<ex.what();
+        cout<<ex.what()<<endl;
     };
     return 0;
 }
