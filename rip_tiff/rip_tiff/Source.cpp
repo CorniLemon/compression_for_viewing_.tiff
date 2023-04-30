@@ -90,7 +90,9 @@ int main() {
         cout << "стало: " << bih.biHeight << "*" << bih.biWidth << endl;
         cout << "выравнивание: " << int(padding) << endl;
 
-        vector<WORD> line1(initialFile.WIDTH * 3 * Add);
+        vector<vector<WORD>> massLine1(Add);
+        for (int i = 0; i < Add; ++i)
+            massLine1[i].resize(initialFile.WIDTH * 3);
         vector<BYTE> line2(bih.biWidth * 3 + padding);
         memset(line2.data() + bih.biWidth * 3, 0, padding * sizeof(BYTE));//паддинг line2 черный
         vector <vector<BYTE>> matrBMP(bih.biHeight);
@@ -107,9 +109,9 @@ int main() {
             for (int j = 0; j < allowH; ++j) {
                 for (int k = 0; k < allowW; ++k) {
                     //суммирование по пикселям
-                    AverageB += line1[j * (initialFile.WIDTH * 3) + (position * Add + k) * 3 + 2] / 4;//B
-                    AverageG += line1[j * (initialFile.WIDTH * 3) + (position * Add + k) * 3 + 1] / 4;//G
-                    AverageR += line1[j * (initialFile.WIDTH * 3) + (position * Add + k) * 3] / 4;//R
+                    AverageB += massLine1[j][(position * Add + k) * 3] / 4;//B
+                    AverageG += massLine1[j][(position * Add + k) * 3+1] / 4;//G
+                    AverageR += massLine1[j][(position * Add + k) * 3+2] / 4;//R
                 }
             }
             AverageB /= count;
@@ -139,53 +141,20 @@ int main() {
         };
 
         fseek(f1.getF(), initialFile.startsStrips[0], SEEK_SET);
-
         
-        
-        //for (int i = 0; i < initialFile.HIGHT; i+=done) {
-            /*for (int j = 0; j < initialFile.countOfStripes; ++j) {
-                fseek(f1.getF(), initialFile.startsStrips[j], SEEK_SET);
-                if (Add - done < remained) {
-                    fread(line1.data(), (initialFile.WIDTH * 3 * 2) * (Add-done), 1, f1.getF());
-                    CreateAllLine2(Add);
-                    matrBMP[k] = line2;
-                    ++k;
-                    remained -= Add;
-                }
-                else ()
-            }*/
-        //}
-
-        /*int remained = 0;
-        int kRead = 0;
-        int done = 0;
-        int kWrite = 0;
-        for (int i = 0; i < initialFile.HIGHT; ++i) {
-            fread(line1.data(), (initialFile.WIDTH * 3 * 2), 1, f1.getF());
-            ++remained;
-            ++done;
-            if ((remained == initialFile.stringsInStripe) && (kRead < initialFile.countOfStripes)) {
-                remained = 0;
-                ++kRead;
-                fseek(f1.getF(), initialFile.startsStrips[kRead], SEEK_SET);
-            }
-            if (done == Add) {
-                done = 0;
-                CreateAllLine2(Add);
-                matrBMP[kWrite] = line2;
-                ++kWrite;
-            }
-        }*/
-        
-
         for (int i = 0; i < initialFile.HIGHT / Add; ++i) {
-            fread(line1.data(), (initialFile.WIDTH * 3 * 2) * Add, 1, f1.getF());
+            for (int j = 0; j < Add; ++j) {
+                massLine1[j] = initialFile.getLine(f1.getF(), i * Add + j);
+            }
             CreateAllLine2(Add);
             matrBMP[i] = line2;
         }
 
         if (HOst)
         {
+            for (int j = 0; j < HOst; ++j) {
+                massLine1[j] = initialFile.getLine(f1.getF(), (initialFile.HIGHT / Add) * Add + j);
+            }
             CreateAllLine2(HOst);
             matrBMP[bih.biHeight - 1] = line2;
         }

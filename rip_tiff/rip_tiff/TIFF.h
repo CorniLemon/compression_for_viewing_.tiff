@@ -8,9 +8,11 @@ class TiffFile {
 public:
     size_t HIGHT = 0;//высота
     size_t WIDTH = 0;//ширина
-    vector<uint32_t> startsStrips;
+    
+    vector<uint32_t> startsStrips;//массив уазателей на начало полос
     int countOfStripes = 0;
     int stringsInStripe = 0;
+    int countOfChanals = 0;
 
     TiffFile(FILE* f) {//читает header
         #pragma pack(push, 1)
@@ -75,7 +77,11 @@ public:
                     throw exception("чёрный кодируется 255, т.е. все цвета инвертированы");
                 break;
             case 273:
-                startOfPtrToStripes = tags[i].valueOffset;//нам пока неизвестно количество полос
+                countOfStripes = tags[i].countOfType;
+                startOfPtrToStripes = tags[i].valueOffset;
+                startsStrips.resize(countOfStripes);
+                fseek(f, startOfPtrToStripes, SEEK_SET);
+                fread(startsStrips.data(), 4, countOfStripes, f);//4 соответствует типу
                 break;
             case 277:
                 if (tags[i].valueOffset != 3)
@@ -90,11 +96,6 @@ public:
             }
         }
 
-        countOfStripes = HIGHT / stringsInStripe;
-        countOfStripes += (HIGHT % stringsInStripe) ? 1 : 0;
-        startsStrips.resize(countOfStripes);
-        fseek(f, startOfPtrToStripes, SEEK_SET);
-        fread(startsStrips.data(), 4, countOfStripes, f);//4 соответствует типу
         cout << "количество полос: " << countOfStripes << endl;
 
         if (!HIGHT || !WIDTH || !bitOnPix||!startOfPtrToStripes||!sizeof(startsStrips)||!stringsInStripe) {//если нет какого-то тега 
@@ -122,5 +123,17 @@ public:
         //print();
     };
 
-    
+    vector<WORD> getLine(FILE* f, size_t i) {
+        vector<WORD>  line1(WIDTH * 3);
+        int num = i / stringsInStripe;
+        if (i % stringsInStripe) {
+            ++num;
+        }
+        else {
+            fseek(f, startsStrips[num], SEEK_SET);
+        }
+        fread(line1.data(), (WIDTH * 3 * 2), 1, f);
+        return line1;
+    }
+        
 };
