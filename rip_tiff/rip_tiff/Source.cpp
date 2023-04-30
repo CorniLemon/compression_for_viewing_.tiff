@@ -36,9 +36,9 @@ int main() {
     setlocale(LC_ALL, "Russian");
 
     try {
-        FileWithDes f1("0041_0102_01567_1_01497_03_S_fr.tiff", "rb");//создание потока для чтения tiff
-        //FileWithDes f1("0041_0102_01567_1_01497_03_S.tiff", "rb");//создание потока для чтения tiff
-        //FileWithDes f1("ket.tiff", "rb");//создание потока для чтения tiff
+        FileWithDes f1("0041_0102_01567_1_01497_03_S_fr.tiff", "rb");//создание потока для чтения маленького tiff
+        //FileWithDes f1("0041_0102_01567_1_01497_03_S.tiff", "rb");//создание потока для чтения большого tiff
+        //FileWithDes f1("ket.tiff", "rb");//создание потока для чтения tiff с рисунком (не подходит)
         TiffFile initialFile(f1.getF());//данные о tiff
         
 
@@ -46,7 +46,7 @@ int main() {
         cout << "пожалуйста, введите количество пикселей, которые будут объединены в 1 (сторона квадратной области)\n";
         cin >> Add;
 
-        if ((Add >= initialFile.WIDTH) || (Add >= initialFile.HIGHT))//проверка add
+        if ((Add >= initialFile.width) || (Add >= initialFile.height))//проверка add
         {
             throw exception("количество объединяемых пикселей слишком большое (изображение сожмется в картинку 1*1)");
         }
@@ -57,12 +57,12 @@ int main() {
         BITMAPINFOHEADER bih;
         uint8_t padding;
 
-        int WOst = initialFile.WIDTH % Add;
-        bih.biWidth = initialFile.WIDTH / Add;
+        int WOst = initialFile.width % Add;
+        bih.biWidth = initialFile.width / Add;
         if (WOst) ++bih.biWidth;
 
-        int HOst = initialFile.HIGHT % Add;
-        bih.biHeight = initialFile.HIGHT / Add;
+        int HOst = initialFile.height % Add;
+        bih.biHeight = initialFile.height / Add;
         if (HOst) ++bih.biHeight;
 
         bfh.bfType = 19778;
@@ -86,23 +86,26 @@ int main() {
         fwrite(&bfh, sizeof(bfh), 1, f2.getF());
         fwrite(&bih, sizeof(bih), 1, f2.getF());
 
-        cout << "было: " << initialFile.HIGHT << "*" << initialFile.WIDTH << endl;
+        cout << "было: " << initialFile.height << "*" << initialFile.width << endl;
         cout << "стало: " << bih.biHeight << "*" << bih.biWidth << endl;
         cout << "выравнивание: " << int(padding) << endl;
 
-        vector<vector<WORD>> massLine1(Add);
+        vector<vector<WORD>> massLine1(Add);//вместо line1
         for (int i = 0; i < Add; ++i)
-            massLine1[i].resize(initialFile.WIDTH * 3);
+            massLine1[i].resize(initialFile.width * 3);
+
         vector<BYTE> line2(bih.biWidth * 3 + padding);
         memset(line2.data() + bih.biWidth * 3, 0, padding * sizeof(BYTE));//паддинг line2 черный
-        vector <vector<BYTE>> matrBMP(bih.biHeight);
 
-        double AverageB;
-        double AverageG;
-        double AverageR;
+        vector <vector<BYTE>> matrBMP(bih.biHeight);//весь bmp
+
+        
 
         auto CreatePixel = [&](int allowH, int allowW, int position) {//создаёт каждый отдельный пиксель
             int count = allowH * allowW;
+            double AverageB;
+            double AverageG;
+            double AverageR;
             AverageB = 0;
             AverageG = 0;
             AverageR = 0;
@@ -139,10 +142,8 @@ int main() {
                 CreateLine2(h1, bih.biWidth);//создаёт всю строку
             }
         };
-
-        fseek(f1.getF(), initialFile.startsStrips[0], SEEK_SET);
         
-        for (int i = 0; i < initialFile.HIGHT / Add; ++i) {
+        for (int i = 0; i < initialFile.height / Add; ++i) {
             for (int j = 0; j < Add; ++j) {
                 massLine1[j] = initialFile.getLine(f1.getF(), i * Add + j);
             }
@@ -153,7 +154,7 @@ int main() {
         if (HOst)
         {
             for (int j = 0; j < HOst; ++j) {
-                massLine1[j] = initialFile.getLine(f1.getF(), (initialFile.HIGHT / Add) * Add + j);
+                massLine1[j] = initialFile.getLine(f1.getF(), (initialFile.height / Add) * Add + j);
             }
             CreateAllLine2(HOst);
             matrBMP[bih.biHeight - 1] = line2;

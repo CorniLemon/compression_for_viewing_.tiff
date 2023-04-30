@@ -6,8 +6,8 @@ using namespace std;
 
 class TiffFile {
 public:
-    size_t HIGHT = 0;//высота
-    size_t WIDTH = 0;//ширина
+    size_t height = 0;//высота
+    size_t width = 0;//ширина
     
     vector<uint32_t> startsStrips;//массив уазателей на начало полос
     int countOfStripes = 0;
@@ -26,7 +26,7 @@ public:
         uint16_t count;//количество тегов
 
         #pragma pack(push, 1)
-        struct IFD {
+        struct IFD {//теги
             uint16_t tag;
             uint16_t type;
             uint32_t countOfType;
@@ -47,20 +47,18 @@ public:
 
         fseek(f, head.offset, SEEK_SET);//переход и чтение вектора тегов
         fread(&count, 2, 1, f);
-
         vector<IFD> tags(count);//вектор тегов
-
         fread(tags.data(), sizeof(IFD), count, f);//чтение тегов
 
-        for (int i = 0; i < count; ++i)
+        for (int i = 0; i < count; ++i)//поиск необходимых тегов
         {
             switch (tags[i].tag)
             {
             case 256:
-                WIDTH = tags[i].valueOffset;
+                width = tags[i].valueOffset;
                 break;
             case 257:
-                HIGHT = tags[i].valueOffset;
+                height = tags[i].valueOffset;
                 break;
             case 258:
                 fseek(f, tags[i].valueOffset, SEEK_SET);
@@ -84,6 +82,7 @@ public:
                 fread(startsStrips.data(), 4, countOfStripes, f);//4 соответствует типу
                 break;
             case 277:
+                countOfChanals = tags[i].valueOffset;
                 if (tags[i].valueOffset != 3)
                     throw exception("в изображении не 3 канала и его не выйдет корректно преобразовать в пнг!");
                 break;
@@ -96,18 +95,16 @@ public:
             }
         }
 
-        cout << "количество полос: " << countOfStripes << endl;
-
-        if (!HIGHT || !WIDTH || !bitOnPix||!startOfPtrToStripes||!sizeof(startsStrips)||!stringsInStripe) {//если нет какого-то тега 
+        if (!height || !width || !bitOnPix||!startOfPtrToStripes||!sizeof(startsStrips)||!stringsInStripe||!countOfChanals) {//проверка наличия некотрых тегов 
             throw exception("нет всех необходимых тегов");
         }
-        
-        cout << "высота = " << HIGHT << endl;
-        cout << "ширина = " << WIDTH << endl;
-        //cout << "смещение к началу пикселей = " << start << endl;
+
+        cout << "количество полос: " << countOfStripes << endl;
+        cout << "высота = " << height << endl;
+        cout << "ширина = " << width << endl;
         cout << "бит на канал = " << bitOnPix << endl;
 
-        auto print = [&]() {
+        auto print = [&]() {//вывод в [], т.к. эти данные не будут храниться в памяти после закрытия конструктора
             cout << "IIorMM = " << head.IIorMM << endl;
             cout << "isItTiff = " << head.isItTiff << endl;
             cout << "offset = " << head.offset << endl;
@@ -123,8 +120,8 @@ public:
         //print();
     };
 
-    vector<WORD> getLine(FILE* f, size_t i) {
-        vector<WORD>  line1(WIDTH * 3);
+    vector<WORD> getLine(FILE* f, size_t i) {//получает номер строки и читает её. fread вызывается
+        vector<WORD>  line1(width * 3);
         int num = i / stringsInStripe;
         if (i % stringsInStripe) {
             ++num;
@@ -132,7 +129,7 @@ public:
         else {
             fseek(f, startsStrips[num], SEEK_SET);
         }
-        fread(line1.data(), (WIDTH * 3 * 2), 1, f);
+        fread(line1.data(), (width * 3 * 2), 1, f);
         return line1;
     }
         
