@@ -76,10 +76,15 @@ public:
                 break;
             case 273:
                 countOfStripes = tags[i].countOfType;
-                startOfPtrToStripes = tags[i].valueOffset;
                 startsStrips.resize(countOfStripes);
-                fseek(f, startOfPtrToStripes, SEEK_SET);
-                fread(startsStrips.data(), 4, countOfStripes, f);//4 соответствует типу
+                if (countOfStripes == 1) {
+                    startsStrips[0] = tags[i].valueOffset;
+                }
+                else {
+                    startOfPtrToStripes = tags[i].valueOffset;
+                    fseek(f, startOfPtrToStripes, SEEK_SET);
+                    fread(startsStrips.data(), 4, countOfStripes, f);//4 соответствует типу
+                }
                 break;
             case 277:
                 countOfChanals = tags[i].valueOffset;
@@ -120,17 +125,12 @@ public:
         //print();
     };
 
-    vector<WORD> getLine(FILE* f, size_t i) {//получает номер строки и читает её. fread вызывается
-        vector<WORD>  line1(width * 3);
+    void getLine(FILE* f, size_t i, vector<WORD>& line1) {//получает номер строки и читает её. fread вызывается
+        /*функция работает только в том случае, если getLine вызывается последовательно, для каждой строки файла*/
         int num = i / stringsInStripe;
-        if (i % stringsInStripe) {
-            ++num;
-        }
-        else {
+        if (!(i % stringsInStripe)) {
             fseek(f, startsStrips[num], SEEK_SET);
         }
         fread(line1.data(), (width * 3 * 2), 1, f);
-        return line1;
-    }
-        
+    }  
 };

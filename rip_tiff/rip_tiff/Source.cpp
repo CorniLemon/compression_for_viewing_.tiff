@@ -145,7 +145,7 @@ int main() {
         
         for (int i = 0; i < initialFile.height / Add; ++i) {
             for (int j = 0; j < Add; ++j) {
-                massLine1[j] = initialFile.getLine(f1.getF(), i * Add + j);
+                initialFile.getLine(f1.getF(), i * Add + j, massLine1[j]);
             }
             CreateAllLine2(Add);
             matrBMP[i] = line2;
@@ -154,7 +154,7 @@ int main() {
         if (HOst)
         {
             for (int j = 0; j < HOst; ++j) {
-                massLine1[j] = initialFile.getLine(f1.getF(), (initialFile.height / Add) * Add + j);
+                initialFile.getLine(f1.getF(), (initialFile.height / Add) * Add + j, massLine1[j]);
             }
             CreateAllLine2(HOst);
             matrBMP[bih.biHeight - 1] = line2;
