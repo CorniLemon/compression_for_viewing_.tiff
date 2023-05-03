@@ -90,17 +90,13 @@ int main() {
         cout << "стало: " << bih.biHeight << "*" << bih.biWidth << endl;
         cout << "выравнивание: " << int(padding) << endl;
 
-        vector<vector<WORD>> massLine1(Add);//вместо line1
-        for (int i = 0; i < Add; ++i)
-            massLine1[i].resize(initialFile.width * 3);
+        vector<WORD> line1(initialFile.width * 3 * Add);
 
         vector<BYTE> line2(bih.biWidth * 3 + padding);
         memset(line2.data() + bih.biWidth * 3, 0, padding * sizeof(BYTE));//паддинг line2 черный
 
         vector <vector<BYTE>> matrBMP(bih.biHeight);//весь bmp
-
-        
-
+              
         auto CreatePixel = [&](int allowH, int allowW, int position) {//создаёт каждый отдельный пиксель
             int count = allowH * allowW;
             double AverageB;
@@ -112,9 +108,9 @@ int main() {
             for (int j = 0; j < allowH; ++j) {
                 for (int k = 0; k < allowW; ++k) {
                     //суммирование по пикселям
-                    AverageB += massLine1[j][(position * Add + k) * 3] / 4;//B
-                    AverageG += massLine1[j][(position * Add + k) * 3+1] / 4;//G
-                    AverageR += massLine1[j][(position * Add + k) * 3+2] / 4;//R
+                    AverageB += line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2] / 4;//B
+                    AverageG += line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1] / 4;//G
+                    AverageR += line1[j * (initialFile.width * 3) + (position * Add + k) * 3] / 4;//R
                 }
             }
             AverageB /= count;
@@ -145,7 +141,7 @@ int main() {
         
         for (int i = 0; i < initialFile.height / Add; ++i) {
             for (int j = 0; j < Add; ++j) {
-                initialFile.getLine(f1.getF(), i * Add + j, massLine1[j]);
+                initialFile.getLine(f1.getF(), i * Add + j, line1.data()+ j * (initialFile.width * 3));
             }
             CreateAllLine2(Add);
             matrBMP[i] = line2;
@@ -154,7 +150,7 @@ int main() {
         if (HOst)
         {
             for (int j = 0; j < HOst; ++j) {
-                initialFile.getLine(f1.getF(), (initialFile.height / Add) * Add + j, massLine1[j]);
+                initialFile.getLine(f1.getF(), (initialFile.height / Add) * Add + j, line1.data() + j * (initialFile.width * 3));
             }
             CreateAllLine2(HOst);
             matrBMP[bih.biHeight - 1] = line2;

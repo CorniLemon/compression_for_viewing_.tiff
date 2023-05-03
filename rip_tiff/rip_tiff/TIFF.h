@@ -125,12 +125,12 @@ public:
         //print();
     };
 
-    void getLine(FILE* f, size_t i, vector<WORD>& line1) {//получает номер строки и читает её. fread вызывается
+    void getLine(FILE* f, size_t i, WORD* line1) {//получает номер строки и читает её. fread вызывается
         /*функция работает только в том случае, если getLine вызывается последовательно, для каждой строки файла*/
         int num = i / stringsInStripe;
         if (!(i % stringsInStripe)) {
             fseek(f, startsStrips[num], SEEK_SET);
         }
-        fread(line1.data(), (width * 3 * 2), 1, f);
+        fread(line1, (width * 3 * 2), 1, f);
     }  
 };
