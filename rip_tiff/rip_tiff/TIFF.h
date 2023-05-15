@@ -4,11 +4,15 @@
 #include<vector>
 using namespace std;
 
+uint64_t histogramR[65536];
+uint64_t histogramG[65536];
+uint64_t histogramB[65536];
+
 class TiffFile {
 private:
-    vector<WORD> R;
-    vector<WORD> G;
-    vector<WORD> B;
+    //vector<WORD> R;
+    //vector<WORD> G;
+    //vector<WORD> B;
     int lenghtOfLine;
 public:
     size_t height = 0;//высота
@@ -122,9 +126,9 @@ public:
         cout << "бит на канал = " << bitOnPix << endl;
 
         lenghtOfLine = height * width;
-        R.resize(lenghtOfLine);
+        /*R.resize(lenghtOfLine);
         G.resize(lenghtOfLine);
-        B.resize(lenghtOfLine);
+        B.resize(lenghtOfLine);*/
 
         auto print = [&]() {//вывод в [], т.к. эти данные не будут храниться в памяти после закрытия конструктора
             cout << "IIorMM = " << head.IIorMM << endl;
@@ -147,33 +151,29 @@ public:
         
         cout << "проверка связи 1.1\n";
 
-        cout << "...читаем файл для анализа яркости...\n";
-        for (int i = 0; i < height; ++i) {//чтение
-            getLine(f, i, line.data());
-            for (int j = 0; j < width; ++j) {
-                R[i * width + j] = line[j * 3];
-                G[i * width + j] = line[j * 3 + 1];
-                B[i * width + j] = line[j * 3 + 2];
-            }
-        }
-
         cout << "проверка связи 1.2\n";
-
-        uint64_t histogramR[65536];
-        uint64_t histogramG[65536];
-        uint64_t histogramB[65536];
 
         memset(histogramR, 0, 65536 * sizeof(uint64_t));
         memset(histogramG, 0, 65536 * sizeof(uint64_t));
         memset(histogramB, 0, 65536 * sizeof(uint64_t));
 
-        for (int i = 0; i < height; i++) {
+        cout << "...читаем файл для анализа яркости...\n";
+        for (int i = 0; i < height; ++i) {//чтение
+            getLine(f, i, line.data());
+            for (int j = 0; j < width; ++j) {
+                ++histogramR[line[j * 3]];
+                ++histogramG[line[j * 3 + 1]];
+                ++histogramB[line[j * 3 + 2]];
+            }
+        }
+
+        /*for (int i = 0; i < height; i++) {
             for (int j = 0; j < width; j++) {
                 ++histogramR[R[i * width + j]];
                 ++histogramG[G[i * width + j]];
                 ++histogramB[B[i * width + j]];
             }
-        }
+        }*/
 
         int sum = 0;
         int i = 0;
