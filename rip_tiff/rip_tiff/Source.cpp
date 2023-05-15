@@ -108,9 +108,29 @@ int main() {
             for (int j = 0; j < allowH; ++j) {
                 for (int k = 0; k < allowW; ++k) {
                     //суммирование по пикселям
-                    AverageB += line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2] / 4;//B
-                    AverageG += line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1] / 4;//G
-                    AverageR += line1[j * (initialFile.width * 3) + (position * Add + k) * 3] / 4;//R
+                    if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3]) < initialFile.minR)
+                        AverageR += 0;
+                    else if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3]) > initialFile.maxR)
+                        AverageR += 255;
+                    else
+                        AverageR += ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3]) - initialFile.minR) * (initialFile.maxR - initialFile.minR) / 255;//R
+
+                    if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1]) < initialFile.minG)
+                        AverageG += 0;
+                    else if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1]) > initialFile.maxG)
+                        AverageG += 255;
+                    else
+                        AverageG += ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1]) - initialFile.minG) * (initialFile.maxG - initialFile.minG) / 255;//G
+
+                    if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2]) < initialFile.minB)
+                        AverageB += 0;
+                    else if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2]) > initialFile.maxB)
+                        AverageB += 255;
+                    else
+                        AverageB += ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2]) - initialFile.minB) * (initialFile.maxB - initialFile.minB) / 255;//B 
+                    //AverageR += line1[j * (initialFile.width * 3) + (position * Add + k) * 3] / 4;//R
+                    //AverageG += line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1] / 4;//G
+                    //AverageB += line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2] / 4;//B 
                 }
             }
             AverageB /= count;
@@ -138,6 +158,8 @@ int main() {
                 CreateLine2(h1, bih.biWidth);//создаёт всю строку
             }
         };
+
+        initialFile.getBrightness(f1.getF());
         
         for (int i = 0; i < initialFile.height / Add; ++i) {
             for (int j = 0; j < Add; ++j) {

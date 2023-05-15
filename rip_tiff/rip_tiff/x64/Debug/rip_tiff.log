@@ -1,8 +1,16 @@
 ﻿  Source.cpp
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(130,1): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(168,1): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(172,1): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(173,1): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(174,1): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(207,1): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
 C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\Source.cpp(61,46): warning C4267: =: преобразование из "size_t" в "LONG"; возможна потеря данных
 C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\Source.cpp(65,48): warning C4267: =: преобразование из "size_t" в "LONG"; возможна потеря данных
   TIFF.cpp
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(130,1): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(168,1): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(172,1): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(173,1): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(174,1): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(207,1): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
   Создание кода...
   rip_tiff.vcxproj -> C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\x64\Debug\rip_tiff.exe

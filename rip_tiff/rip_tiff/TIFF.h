@@ -5,6 +5,10 @@
 using namespace std;
 
 class TiffFile {
+private:
+    vector<WORD> R;
+    vector<WORD> G;
+    vector<WORD> B;
 public:
     size_t height = 0;//высота
     size_t width = 0;//ширина
@@ -13,6 +17,13 @@ public:
     int countOfStripes = 0;
     int stringsInStripe = 0;
     int countOfChanals = 0;
+
+    int maxR = 65535;
+    int minR = 0;
+    int maxG = 65535;
+    int minG = 0;
+    int maxB = 65535;
+    int minB = 0;
 
     TiffFile(FILE* f) {//читает header
         #pragma pack(push, 1)
@@ -109,6 +120,10 @@ public:
         cout << "ширина = " << width << endl;
         cout << "бит на канал = " << bitOnPix << endl;
 
+        R.resize(height* width);
+        G.resize(height* width);
+        B.resize(height* width);
+
         auto print = [&]() {//вывод в [], т.к. эти данные не будут храниться в памяти после закрытия конструктора
             cout << "IIorMM = " << head.IIorMM << endl;
             cout << "isItTiff = " << head.isItTiff << endl;
@@ -124,6 +139,68 @@ public:
 
         //print();
     };
+
+    void bubbleSort(WORD* line, int n) {
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = 0; j < n - i - 1; j++) {
+                if (line[j] > line[j + 1]) {
+                    int temp = line[j];
+                    line[j] = line[j + 1];
+                    line[j + 1] = temp;
+                }
+            }
+        }
+    }
+
+    void getBrightness(FILE* f) {
+        vector<WORD> line (width * 3);
+        for (int i = 0; i < height; ++i) {//чтение
+            getLine(f, i, line.data());
+            for (int j = 0; j < width; ++j) {
+                R[i * width + j] = line[j * 3];
+                G[i * width + j] = line[j * 3 + 1];
+                B[i * width + j] = line[j * 3 + 2];
+            }
+        }
+        /*поиск выбросов*/
+        
+        int Q1, Q3;
+        Q1 = width / 4;
+        Q3 = Q1 * 3;
+        //cout << R[0] << " " << R[Q1] << " " << R[Q3] << " " << R[width - 1] << endl;
+
+        bubbleSort(R.data(), width);
+        bubbleSort(G.data(), width);
+        bubbleSort(B.data(), width);
+
+        /*внутренние границы*/
+        minR = R[Q1] - ((R[Q3] - R[Q1]) * 3);
+        maxR = R[Q3] + ((R[Q3] - R[Q1]) * 3);
+        minG = G[Q1] - ((G[Q3] - G[Q1]) * 3);
+        maxG = G[Q3] + ((G[Q3] - G[Q1]) * 3);
+        minB = B[Q1] - ((B[Q3] - B[Q1]) * 3);
+        maxB = B[Q3] + ((B[Q3] - B[Q1]) * 3);
+        /*minR = R[Q1] - ((R[Q3] - R[Q1]) * 1.5);
+        maxR = R[Q3] + ((R[Q3] - R[Q1]) * 1.5);
+        minG = G[Q1] - ((G[Q3] - G[Q1]) * 1.5);
+        maxG = G[Q3] + ((G[Q3] - G[Q1]) * 1.5);
+        minB = B[Q1] - ((B[Q3] - B[Q1]) * 1.5);
+        maxB = B[Q3] + ((B[Q3] - B[Q1]) * 1.5);*/
+        cout << "\nдиапазон R: " << minR << ":" << maxR;
+        cout << "\nдиапазон G: " << minG << ":" << maxG;
+        cout << "\nдиапазон B: " << minB << ":" << maxB<<"\n";
+
+        /*cout << "\nкоэффициент" << 255 / (maxR - minR) << endl;
+        cout << "\nкоэффициент" << 255 / (maxG - minG) << endl;
+        cout << "\nкоэффициент" << 255 / (maxB - minB) << endl;*/
+
+        cout << R[0] << " " << R[Q1] << " " << R[Q3] << " " << R[width - 1] << endl;
+        cout << G[0] << " " << G[Q1] << " " << G[Q3] << " " << G[width - 1] << endl;
+        cout << B[0] << " " << B[Q1] << " " << B[Q3] << " " << B[width - 1] << endl;
+        /*cout << "\n всего пикселей: " << width;
+        cout << "\n Q1: " << Q1;
+        cout << "\n Q3: " << Q3;*/
+    }
 
     void getLine(FILE* f, size_t i, WORD* line1) {//получает номер строки и читает её. fread вызывается
         /*функция работает только в том случае, если getLine вызывается последовательно, для каждой строки файла*/
