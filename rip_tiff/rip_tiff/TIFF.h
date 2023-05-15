@@ -159,49 +159,78 @@ public:
 
         cout << "проверка связи 1.2\n";
 
-        /*поиск выбросов*/
-        int Q1, Q3;
-        Q1 = lenghtOfLine / 4;
-        Q3 = Q1 * 3;
-        //cout << R[0] << " " << R[Q1] << " " << R[Q3] << " " << R[width - 1] << endl;
+        uint64_t histogramR[65536];
+        uint64_t histogramG[65536];
+        uint64_t histogramB[65536];
 
-        /*bubbleSort(R.data(), lenghtOfLine);
-        cout << "\nпроверка связи 1.2.1\n";
-        bubbleSort(G.data(), lenghtOfLine);
-        cout << "\nпроверка связи 1.2.2\n";
-        bubbleSort(B.data(), lenghtOfLine);*/
+        memset(histogramR, 0, 65536 * sizeof(uint64_t));
+        memset(histogramG, 0, 65536 * sizeof(uint64_t));
+        memset(histogramB, 0, 65536 * sizeof(uint64_t));
 
-        /*insertionSort(R.data(), lenghtOfLine);
-        cout << "\nпроверка связи 1.2.1\n";
-        insertionSort(G.data(), lenghtOfLine);
-        cout << "\nпроверка связи 1.2.2\n";
-        insertionSort(B.data(), lenghtOfLine);*/
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
+                ++histogramR[R[i * width + j]];
+                ++histogramG[G[i * width + j]];
+                ++histogramB[B[i * width + j]];
+            }
+        }
+
+        int sum = 0;
+        int i = 0;
+        while (sum < 0.02 * lenghtOfLine) {
+            sum += histogramR[i];
+            ++i;
+        }
+        minR = i;
+
+        sum = 0;
+        i = 0;
+        while (sum < 0.02 * lenghtOfLine) {
+            sum += histogramG[i];
+            ++i;
+        }
+        minG = i;
+
+        sum = 0;
+        i = 0;
+        while (sum < 0.02 * lenghtOfLine) {
+            sum += histogramB[i];
+            ++i;
+        }
+        minB = i;
+
+        sum = 0;
+        i = 65535;
+        while (sum < 0.02 * lenghtOfLine) {
+            sum += histogramR[i];
+            --i;
+        }
+        maxR = i;
+
+        sum = 0;
+        i = 65535;
+        while (sum < 0.02 * lenghtOfLine) {
+            sum += histogramG[i];
+            --i;
+        }
+        maxG = i;
+
+        sum = 0;
+        i = 65535;
+        while (sum < 0.02 * lenghtOfLine) {
+            sum += histogramB[i];
+            --i;
+        }
+        maxB = i;
 
         cout << "проверка связи 1.3\n";
 
-        /*внутренние границы*/
-        minR = R[Q1] - ((R[Q3] - R[Q1]) * 1.5);
-        maxR = R[Q3] + ((R[Q3] - R[Q1]) * 1.5);
-        minG = G[Q1] - ((G[Q3] - G[Q1]) * 1.5);
-        maxG = G[Q3] + ((G[Q3] - G[Q1]) * 1.5);
-        minB = B[Q1] - ((B[Q3] - B[Q1]) * 1.5);
-        maxB = B[Q3] + ((B[Q3] - B[Q1]) * 1.5);
+
         cout << "\nдиапазон R: " << minR << ":" << maxR;
         cout << "\nдиапазон G: " << minG << ":" << maxG;
         cout << "\nдиапазон B: " << minB << ":" << maxB<<"\n";
 
         cout << "проверка связи 1.4\n";
-
-        /*cout << "\nкоэффициент" << 255 / (maxR - minR) << endl;
-        cout << "\nкоэффициент" << 255 / (maxG - minG) << endl;
-        cout << "\nкоэффициент" << 255 / (maxB - minB) << endl;*/
-
-        cout << R[0] << " " << R[Q1] << " " << R[Q3] << " " << R[lenghtOfLine - 1] << endl;
-        cout << G[0] << " " << G[Q1] << " " << G[Q3] << " " << G[lenghtOfLine - 1] << endl;
-        cout << B[0] << " " << B[Q1] << " " << B[Q3] << " " << B[lenghtOfLine - 1] << endl;
-        /*cout << "\n всего пикселей: " << lenghtOfLine;
-        cout << "\n Q1: " << Q1;
-        cout << "\n Q3: " << Q3;*/
     }
 
     void getLine(FILE* f, size_t i, WORD* line1) {//получает номер строки и читает её. fread вызывается

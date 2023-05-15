@@ -1,22 +1,12 @@
 ﻿  Source.cpp
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(124,1): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(202,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(203,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(204,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(205,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(206,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(207,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(228,1): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(125,1): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(182,32): warning C4244: +=: преобразование "uint64_t" в "int", возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(190,32): warning C4244: +=: преобразование "uint64_t" в "int", возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(198,32): warning C4244: +=: преобразование "uint64_t" в "int", возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(206,32): warning C4244: +=: преобразование "uint64_t" в "int", возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(214,32): warning C4244: +=: преобразование "uint64_t" в "int", возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(222,32): warning C4244: +=: преобразование "uint64_t" в "int", возможна потеря данных
+C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(239,1): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
 C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\Source.cpp(61,46): warning C4267: =: преобразование из "size_t" в "LONG"; возможна потеря данных
 C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\Source.cpp(65,48): warning C4267: =: преобразование из "size_t" в "LONG"; возможна потеря данных
-  TIFF.cpp
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(124,1): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(202,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(203,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(204,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(205,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(206,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(207,22): warning C4244: =: преобразование "double" в "int", возможна потеря данных
-C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\rip_tiff\TIFF.h(228,1): warning C4267: инициализация: преобразование из "size_t" в "int"; возможна потеря данных
-  Создание кода...
   rip_tiff.vcxproj -> C:\Users\Наталья\Desktop\работа\compression_for_viewing_.tiff\rip_tiff\x64\Debug\rip_tiff.exe
