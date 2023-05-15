@@ -127,10 +127,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Sorts.cpp" />
     <ClCompile Include="Source.cpp" />
-    <ClCompile Include="TIFF.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Sorts.h" />
     <ClInclude Include="TIFF.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -96,6 +96,8 @@ int main() {
         memset(line2.data() + bih.biWidth * 3, 0, padding * sizeof(BYTE));//паддинг line2 черный
 
         vector <vector<BYTE>> matrBMP(bih.biHeight);//весь bmp
+
+        cout << "проверка св€зи 1\n";
               
         auto CreatePixel = [&](int allowH, int allowW, int position) {//создаЄт каждый отдельный пиксель
             int count = allowH * allowW;
@@ -160,6 +162,8 @@ int main() {
         };
 
         initialFile.getBrightness(f1.getF());
+
+        cout << "проверка св€зи 2\n";
         
         for (int i = 0; i < initialFile.height / Add; ++i) {
             for (int j = 0; j < Add; ++j) {
@@ -168,6 +172,8 @@ int main() {
             CreateAllLine2(Add);
             matrBMP[i] = line2;
         }
+
+        cout << "проверка св€зи 3\n";
 
         if (HOst)
         {
@@ -178,9 +184,13 @@ int main() {
             matrBMP[bih.biHeight - 1] = line2;
         }
 
+        cout << "проверка св€зи 4\n";
+
         for (int i = bih.biHeight - 1; i >= 0; --i) {
             fwrite(matrBMP[i].data(), bih.biWidth * 3 + padding, 1, f2.getF());
         }
+
+        cout << "проверка св€зи 5\n";
     }
     catch (exception& ex) {
         cout << "что-то пошло не так...\n\n";
