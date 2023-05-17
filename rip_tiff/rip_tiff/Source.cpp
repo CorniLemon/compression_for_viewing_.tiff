@@ -97,7 +97,7 @@ int main() {
 
         vector <vector<BYTE>> matrBMP(bih.biHeight);//весь bmp
 
-        cout << "проверка связи 1\n";
+        //cout << "проверка связи 1\n";
               
         auto CreatePixel = [&](int allowH, int allowW, int position) {//создаёт каждый отдельный пиксель
             int count = allowH * allowW;
@@ -115,24 +115,21 @@ int main() {
                     else if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3]) > initialFile.maxR)
                         AverageR += 255;
                     else
-                        AverageR += ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3]) - initialFile.minR) * (initialFile.maxR - initialFile.minR) / 255;//R
+                        AverageR += ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3]) - initialFile.minR) * 255ll / (initialFile.maxR - initialFile.minR);//R
 
                     if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1]) < initialFile.minG)
                         AverageG += 0;
                     else if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1]) > initialFile.maxG)
                         AverageG += 255;
                     else
-                        AverageG += ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1]) - initialFile.minG) * (initialFile.maxG - initialFile.minG) / 255;//G
+                        AverageG += ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1]) - initialFile.minG) * 255ll / (initialFile.maxG - initialFile.minG);//G
 
                     if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2]) < initialFile.minB)
                         AverageB += 0;
                     else if ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2]) > initialFile.maxB)
                         AverageB += 255;
                     else
-                        AverageB += ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2]) - initialFile.minB) * (initialFile.maxB - initialFile.minB) / 255;//B 
-                    //AverageR += line1[j * (initialFile.width * 3) + (position * Add + k) * 3] / 4;//R
-                    //AverageG += line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 1] / 4;//G
-                    //AverageB += line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2] / 4;//B 
+                        AverageB += ((line1[j * (initialFile.width * 3) + (position * Add + k) * 3 + 2]) - initialFile.minB) * 255ll / (initialFile.maxB - initialFile.minB);//B 
                 }
             }
             AverageB /= count;
@@ -163,7 +160,7 @@ int main() {
 
         initialFile.getBrightness(f1.getF());
 
-        cout << "проверка связи 2\n";
+        //cout << "проверка связи 2\n";
         
         for (int i = 0; i < initialFile.height / Add; ++i) {
             for (int j = 0; j < Add; ++j) {
@@ -173,7 +170,7 @@ int main() {
             matrBMP[i] = line2;
         }
 
-        cout << "проверка связи 3\n";
+        //cout << "проверка связи 3\n";
 
         if (HOst)
         {
@@ -184,13 +181,13 @@ int main() {
             matrBMP[bih.biHeight - 1] = line2;
         }
 
-        cout << "проверка связи 4\n";
+        //cout << "проверка связи 4\n";
 
         for (int i = bih.biHeight - 1; i >= 0; --i) {
             fwrite(matrBMP[i].data(), bih.biWidth * 3 + padding, 1, f2.getF());
         }
 
-        cout << "проверка связи 5\n";
+        //cout << "проверка связи 5\n";
     }
     catch (exception& ex) {
         cout << "что-то пошло не так...\n\n";
